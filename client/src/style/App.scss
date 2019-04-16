@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css?family=Rozha+One");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.App {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: "Rozha One", serif;
+  font-weight: 100;
+}

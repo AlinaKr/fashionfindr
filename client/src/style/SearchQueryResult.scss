@@ -1,0 +1,83 @@
+// // Definition of variables
+$primary: #37f3e4;
+
+.list-view-element {
+  position: relative;
+  text-align: center;
+  margin: 10px;
+  overflow: hidden;
+  border: 2px solid $primary;
+}
+
+.list-view-element img {
+  display: inline-block;
+  height: 13em;
+  width: 13em;
+  object-fit: cover;
+}
+
+.list-view-element img:hover + .animated-info {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+  display: block;
+}
+
+.product-info {
+  font-size: 60%;
+  overflow: hidden;
+  text-align: left;
+  display: block;
+  border-top: 2px solid $primary;
+  position: relative;
+  height: 5em;
+  z-index: 4;
+}
+
+.product-info a,
+.product-info p,
+.product-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: absolute;
+  padding-left: 1px;
+}
+
+a {
+  top: 1em;
+  color: #121314 !important;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+p {
+  top: 2em;
+}
+
+span {
+  top: 5em;
+}
+
+.animated-info {
+  transform: translate3d(0, 40px, 0);
+  position: absolute;
+  bottom: 5em;
+  z-index: 2;
+  display: block;
+  visibility: hidden;
+  width: 100%;
+  transition: all 0.25s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  background-color: #fff !important;
+  height: 40px;
+  font-size: 9.6px;
+  line-height: 20px;
+  color: #121314;
+  text-align: center;
+  letter-spacing: 0.3px;
+  border: 0;
+  opacity: 0.85;
+}
