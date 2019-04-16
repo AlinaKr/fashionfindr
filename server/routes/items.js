@@ -51,8 +51,8 @@ router.post("/search", (req, res, next) => {
 //Method to parse jlFile to JSON-format and save to the database
 fillDatabase = () => {
   const content = fs.readFileSync(jlFile, "utf8");
-
-  let contentArr = content.split("\n");
+  //remove the last character(a blank line!) of the content string to successfully parse JSON
+  let contentArr = content.substring(0, content.length - 1).split("\n");
   for (let i = 0; i < contentArr.length; i++) {
     let item = JSON.parse(contentArr[i]);
     let { product_id, brand, url, gender, images, price, product_title } = item;
