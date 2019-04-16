@@ -3,10 +3,8 @@ const FashionItem = require("../models/FashionItem");
 const router = express.Router();
 const dbURI = "mongodb://localhost/intelistyle-db";
 const mongoose = require("mongoose");
-const http = require("http");
 const fs = require("fs");
-const jlFile =
-  "C:/Users/AlinaKraft/Documents/IT/Javascript/AutoLearning/intelistyle/server/data/garment_items.jl";
+const jlFile = "./data/garment_items.jl";
 const defaultImg =
   "https://www.sketchappsources.com/resources/source-image/casual-wear-and-clothing-icons-kosmofish.jpg";
 

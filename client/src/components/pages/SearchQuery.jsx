@@ -59,6 +59,7 @@ export default class SearchQuery extends Component {
                 <i
                   className="fa fa-circle-o"
                   aria-hidden="true"
+                  //since the onChange events on the radio input buttons wouldn't fire, it had to be hard coded like this
                   onClick={() => this.setState({ searchFilter: "default" })}
                 />
                 <span>Default</span>
