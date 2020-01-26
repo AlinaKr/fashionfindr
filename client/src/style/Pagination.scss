@@ -1,0 +1,42 @@
+/* Declare some variables */
+
+$base-color: #ced4da;
+$light-background: lighten(desaturate($base-color, 50%), 12.5%);
+
+/* Define Styles */
+
+/* Override some Bootstrap pagination styles */
+
+ul.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+  margin-bottom: 13px;
+  list-style: none;
+  flex-direction: row;
+  padding: 0;
+  color: black !important;
+
+  li.page-item.active {
+    a.page-link {
+      background-color: saturate(lighten($base-color, 7.5%), 2.5%) !important;
+      border-color: $base-color !important;
+      color: black !important;
+      text-decoration: none;
+      border: 1px solid black;
+    }
+  }
+
+  a.page-link {
+    padding: 0.75rem 1rem;
+    min-width: 3.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: black !important;
+    font-size: 1rem;
+
+    &:hover {
+      background-color: $light-background;
+    }
+  }
+}

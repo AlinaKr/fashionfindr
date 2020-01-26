@@ -12,6 +12,11 @@
     "node": "8.9.4"
   },
   "dependencies": {
-    "font-awesome": "^4.7.0"
+    "elasticsearch": "^15.4.1",
+    "font-awesome": "^4.7.0",
+    "logdna": "^3.0.1",
+    "node-env-file": "^0.1.8",
+    "nodemon": "^1.18.11",
+    "pug": "^2.0.3"
   }
 }

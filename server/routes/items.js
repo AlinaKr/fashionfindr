@@ -5,16 +5,16 @@ const dbURI = "mongodb://localhost/intelistyle-db";
 const mongoose = require("mongoose");
 const fs = require("fs");
 const jlFile = "./data/garment_items.jl";
-const defaultImg =
-  "https://www.sketchappsources.com/resources/source-image/casual-wear-and-clothing-icons-kosmofish.jpg";
+const defaultImg = "https://www.sketchappsources.com/resources/source-image/casual-wear-and-clothing-icons-kosmofish.jpg";
 
 mongoose.connect(dbURI);
-mongoose.connection.on("connected", function() {
+mongoose.connection.on("connected", function () {
   console.log("Mongoose default connection open to " + dbURI);
 
   // To Count Documents of a particular collection
   let coll = mongoose.connection.db.collection("fashionitems");
-  coll.countDocuments(function(err, count) {
+
+  coll.countDocuments((err, count) => {
     //Only fill database if it is currently empty
     if (count == 0) {
       fillDatabase();
@@ -27,25 +27,22 @@ mongoose.connection.on("connected", function() {
 
 //Route for search query
 router.post("/search", (req, res, next) => {
-  const { search, filter } = req.body;
-  if (filter === "default") {
-    FashionItem.find({
-      $text: { $search: search }
+  const { search, filter, offset, limit } = req.body;
+  const textQuery = { $text: { $search: search } };
+  const sortQuery = filter === "default" ? null : filter === "ascendingPrice" ? { sort: { price: 1 } } : { sort: { price: -1 } }
+
+  FashionItem.find({
+    $text: { $search: search }
+  })
+    .then(products => {
+      const productsCount = products.length
+      FashionItem.find(textQuery, null, sortQuery).skip(offset).limit(limit)
+        .then(productsPerPage => {
+          res.json([...productsPerPage, { resultsTotal: productsCount }]);
+        })
+        .catch(e => next(e))
     })
-      .then(products => {
-        res.json(products);
-      })
-      .catch(e => next(e));
-  } else {
-    FashionItem.find({
-      $text: { $search: search }
-    })
-      .sort({ price: filter === "ascendingPrice" ? 1 : -1 })
-      .then(products => {
-        res.json(products);
-      })
-      .catch(e => next(e));
-  }
+    .catch(e => next(e));
 });
 
 //Method to parse jlFile to JSON-format and save to the database
@@ -76,7 +73,7 @@ fillDatabase = () => {
 
     //Using Model.findOneAndUpdate in combination with upsert:true is an alternative to avoid duplicate elements.
     //It is very slow though so for faster performance, the Model.save method was preferred
-    newItem.save(function(err, result) {
+    newItem.save(function (err, result) {
       if (err) throw err;
       // saved!
     });

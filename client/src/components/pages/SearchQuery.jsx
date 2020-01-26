@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "../../../../node_modules/font-awesome/css/font-awesome.min.css";
 import "../../style/SearchQuery.scss";
 import SearchQueryResults from "../pages/SearchQueryResults";
+import Pagination from "../pages/Pagination";
 import api from "../../api";
 
 export default class SearchQuery extends Component {
@@ -14,24 +15,29 @@ export default class SearchQuery extends Component {
       searchFilter: "default",
       err: "",
       loading: false,
-      results: null
+      results: null,
+      resultsTotal: null,
+      offset: 0,
+      limit: 30,
+      currentPage: 1,
     };
   }
 
   render() {
-    const { searchInput, results, loading } = this.state;
+    const { active, searchInput, searchFilter, loading, results, resultsTotal, offset, limit, currentPage } = this.state;
+
     return (
       <div className="search-wrapper">
         <form
           onSubmit={this._onSubmit}
           style={{
-            display: !this.state.active && "flex",
-            justifyContent: !this.state.active && "center"
+            display: !active && "flex",
+            justifyContent: !active && "center"
           }}
         >
           <i
             className={
-              this.state.active
+              active
                 ? "fa fa-search search-icon-opened"
                 : "fa fa-search"
             }
@@ -39,21 +45,21 @@ export default class SearchQuery extends Component {
           />
           <input
             type="text"
-            className={this.state.active ? "input-opened" : ""}
-            style={{ width: this.state.active ? "250px" : "0px" }}
+            className={active ? "input-opened" : ""}
+            style={{ width: active ? "250px" : "0px" }}
             name="searchInput"
             value={searchInput}
             placeholder="Enter a garment..."
             onChange={this._onChange}
           />
-          {this.state.active && (
+          {active && (
             <div className="radio-wrapper">
               <label className="radio-btn" htmlFor="">
                 <input
                   type="radio"
                   value="default"
                   name="searchFilter"
-                  checked={this.state.searchFilter === "default"}
+                  checked={searchFilter === "default"}
                   onChange={this._onChange}
                 />
                 <i
@@ -69,7 +75,7 @@ export default class SearchQuery extends Component {
                   type="radio"
                   value="ascendingPrice"
                   name="searchFilter"
-                  checked={this.state.searchFilter === "ascendingPrice"}
+                  checked={searchFilter === "ascendingPrice"}
                   onChange={this._onChange}
                 />
                 <i
@@ -86,7 +92,7 @@ export default class SearchQuery extends Component {
                   type="radio"
                   value="descendingPrice"
                   name="searchFilter"
-                  checked={this.state.searchFilter === "descendingPrice"}
+                  checked={searchFilter === "descendingPrice"}
                   onChange={this._onChange}
                 />
                 <i
@@ -102,22 +108,65 @@ export default class SearchQuery extends Component {
           )}
           <input
             type="submit"
-            className={this.state.active ? "submit submit-active" : "submit"}
+            className={active ? "submit submit-active" : "submit"}
             value="Search"
             disabled={!searchInput}
-            style={{ display: this.state.active && "inline-block" }}
+            style={{ display: active && "inline-block" }}
           />
         </form>
-        {this.state.searchInput && (
+        {results && !loading && (
+          <Pagination
+            offset={offset}
+            limit={limit}
+            resultsTotal={resultsTotal}
+            pageNeighbours={1}
+            currentPage={currentPage}
+            _updatePage={this._updatePage}
+          />
+        )}
+        {results && (
           <SearchQueryResults results={results} loading={loading} />
         )}
       </div>
     );
+
   }
 
-  _toggleClass() {
+  _toggleClass = () => {
     let current = this.state.active;
     this.setState({ active: !current });
+  }
+
+  _updatePage = currPage => {
+    const newOffset = this.state.limit * (currPage - 1);
+    this.setState({ offset: newOffset, currentPage: currPage }, () => this._conductSearch());
+  };
+
+  _conductSearch = async () => {
+    let data = {
+      search: this.state.searchInput,
+      filter: this.state.searchFilter,
+      offset: this.state.offset,
+      limit: this.state.limit,
+    };
+
+    await this.setState({ loading: true });
+
+    api
+      .searchFashionItems(data)
+      .then(results => {
+        this.setState({
+          // remove last element of result array, which contains the total number of search results info
+          results: results.slice(0, results.length - 1),
+          resultsTotal: results.pop().resultsTotal,
+          loading: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          err: err.description
+        });
+      });
   }
 
   _onSubmit = e => {
@@ -128,55 +177,11 @@ export default class SearchQuery extends Component {
       return;
     }
 
-    let data = {
-      search: this.state.searchInput,
-      filter: this.state.searchFilter
-    };
-
-    this.setState({ loading: true });
-
-    api
-      .searchFashionItems(data)
-      .then(results => {
-        this.setState({
-          results: results,
-          loading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          err: err.description
-        });
-      });
+    this.setState({ offset: 0, currentPage: 1 }, () => { this._conductSearch() });
   };
 
   _onChange = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.currentTarget.value });
-    if (!this.state.searchInput) {
-      this.setState({ results: null, loading: false });
-      return;
-    }
-
-    let data = {
-      search: this.state.searchInput,
-      filter: this.state.searchFilter
-    };
-
-    this.setState({ loading: true });
-
-    api
-      .searchFashionItems(data)
-      .then(results => {
-        this.setState({
-          results: results,
-          loading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          err: err.description
-        });
-      });
   };
 }

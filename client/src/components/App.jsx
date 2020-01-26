@@ -7,7 +7,7 @@ export default class App extends Component {
     return (
       <div className="App">
         <div className="container">
-          <h1>Intelistyle Challenge</h1>
+          <h1>Full Stack Challenge</h1>
           <SearchQuery />
         </div>
       </div>
