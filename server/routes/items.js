@@ -26,24 +26,19 @@ mongoose.connection.on("connected", function () {
 });
 
 //Route for search query
-router.post("/search", (req, res, next) => {
+router.post("/search", async (req, res, next) => {
   const { search, filter, offset, limit } = req.body;
   const textQuery = { $text: { $search: search } };
   const sortQuery = filter === "default" ? null : filter === "ascendingPrice" ? { sort: { price: 1 } } : { sort: { price: -1 } }
-
-  FashionItem.find({
-    $text: { $search: search }
-  })
-    .then(products => {
-      const productsCount = products.length
-      FashionItem.find(textQuery, null, sortQuery).skip(offset).limit(limit)
-        .then(productsPerPage => {
-          res.json([...productsPerPage, { resultsTotal: productsCount }]);
-        })
-        .catch(e => next(e))
-    })
-    .catch(e => next(e));
-});
+  try {
+    const allMatches = await FashionItem.find({ $text: { $search: search } });
+    const matchesCount = allMatches.length;
+    const matchesPerPage = await FashionItem.find(textQuery, null, sortQuery).skip(offset).limit(limit);
+    res.json([...matchesPerPage, { resultsTotal: matchesCount }]);
+  } catch (err) {
+    next(err)
+  }
+})
 
 //Method to parse jlFile to JSON-format and save to the database
 fillDatabase = () => {

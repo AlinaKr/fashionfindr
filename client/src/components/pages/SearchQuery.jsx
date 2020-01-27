@@ -24,7 +24,7 @@ export default class SearchQuery extends Component {
   }
 
   render() {
-    const { active, searchInput, searchFilter, loading, results, resultsTotal, offset, limit, currentPage } = this.state;
+    const { active, searchInput, searchFilter, loading, results, resultsTotal, offset, limit, currentPage, err } = this.state;
 
     return (
       <div className="search-wrapper">
@@ -124,8 +124,8 @@ export default class SearchQuery extends Component {
             _updatePage={this._updatePage}
           />
         )}
-        {results && (
-          <SearchQueryResults results={results} loading={loading} />
+        {(results || loading || err) && (
+          <SearchQueryResults results={results} loading={loading} err={err} />
         )}
       </div>
     );
@@ -163,8 +163,11 @@ export default class SearchQuery extends Component {
         });
       })
       .catch(err => {
+        console.log("error has occurrred!", err.description)
         this.setState({
-          err: err.description
+          err: err,
+          results: null,
+          loading: false
         });
       });
   }
