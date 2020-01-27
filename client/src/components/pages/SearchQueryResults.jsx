@@ -3,10 +3,10 @@ import "../../style/SearchQueryResults.scss";
 import SearchQueryResult from "../pages/SearchQueryResult";
 // import { List, AutoSizer } from "react-virtualized";
 
-const SearchQueryResults = ({ results, loading }) => {
+const SearchQueryResults = ({ results, loading, err }) => {
   if (loading) return <div id="loading-text">LOADING</div>;
 
-  if (!results && !loading) return null;
+  if (err !== "") return <div>An error has occured. Please try again later</div>;
 
   const queryComponents = results.map((el, i) => (
     <SearchQueryResult

@@ -1,6 +1,6 @@
 /* Declare some variables */
 
-$base-color: #ced4da;
+$base-color: #37f3e4;
 $light-background: lighten(desaturate($base-color, 50%), 12.5%);
 
 /* Define Styles */
@@ -14,26 +14,30 @@ ul.pagination {
   margin-bottom: 13px;
   list-style: none;
   flex-direction: row;
-  padding: 0;
   color: black !important;
+  // box-shadow: 0 0.3px 0.6px rgba(0, 0, 0, 0.056), 0 0.7px 1.3px rgba(0, 0, 0, 0.081), 0 1.3px 2.5px rgba(0, 0, 0, 0.1), 0 2.2px 4.5px rgba(0, 0, 0, 0.119), 0 4.2px 8.4px rgba(0, 0, 0, 0.144), 0 10px 20px rgba(0, 0, 0, 0.2);
+  padding: 14px 22px;
+  border-radius: 50px;
+  width: 250px;
 
   li.page-item.active {
     a.page-link {
-      background-color: saturate(lighten($base-color, 7.5%), 2.5%) !important;
-      border-color: $base-color !important;
+      background-color: saturate(lighten($base-color, 27.5%), 2.5%) !important;
       color: black !important;
       text-decoration: none;
-      border: 1px solid black;
+      border-radius: 50%;
+      border: 2px solid $base-color !important;
     }
   }
 
   a.page-link {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.7rem;
     min-width: 3.5rem;
     text-align: center;
     text-decoration: none;
     color: black !important;
-    font-size: 1rem;
+    font-size: 0.8rem;
+    border-radius: 50%;
 
     &:hover {
       background-color: $light-background;
