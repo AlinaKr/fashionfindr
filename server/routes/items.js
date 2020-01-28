@@ -29,11 +29,12 @@ mongoose.connection.on("connected", function () {
 router.post("/search", async (req, res, next) => {
   const { search, filter, offset, limit } = req.body;
   const textQuery = { $text: { $search: search } };
-  const sortQuery = filter === "default" ? null : filter === "ascendingPrice" ? { sort: { price: 1 } } : { sort: { price: -1 } }
+  const sortQuery = filter === "Default" ? null : filter === "Low To High" ? { sort: { price: 1 } } : { sort: { price: -1 } }
   try {
     const allMatches = await FashionItem.find({ $text: { $search: search } });
     const matchesCount = allMatches.length;
     const matchesPerPage = await FashionItem.find(textQuery, null, sortQuery).skip(offset).limit(limit);
+    console.log(typeof matchesPerPage, { matchesPerPage })
     res.json([...matchesPerPage, { resultsTotal: matchesCount }]);
   } catch (err) {
     next(err)
@@ -68,7 +69,7 @@ fillDatabase = () => {
 
     //Using Model.findOneAndUpdate in combination with upsert:true is an alternative to avoid duplicate elements.
     //It is very slow though so for faster performance, the Model.save method was preferred
-    newItem.save(function (err, result) {
+    newItem.save((err, result) => {
       if (err) throw err;
       // saved!
     });

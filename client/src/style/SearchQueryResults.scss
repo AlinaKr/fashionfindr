@@ -1,13 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Rozha+One");
 
-#loading-text {
+#loading {
   -moz-animation: loading-text-opacity 2s linear 0s infinite normal;
   -o-animation: loading-text-opacity 2s linear 0s infinite normal;
   -webkit-animation: loading-text-opacity 2s linear 0s infinite normal;
   animation: loading-text-opacity 2s linear 0s infinite normal;
-  padding-top: 4em;
-  font-family: "Rozha One";
-  font-size: 120%;
 }
 
 @keyframes loading-text-opacity {
@@ -23,6 +20,12 @@
   100% {
     opacity: 0;
   }
+}
+
+.alternative-text {
+  padding-top: 4em;
+  font-family: "Rozha One";
+  font-size: 120%;
 }
 
 .list-view {

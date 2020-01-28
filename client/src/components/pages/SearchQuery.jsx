@@ -3,16 +3,16 @@ import "../../../../node_modules/font-awesome/css/font-awesome.min.css";
 import "../../style/SearchQuery.scss";
 import SearchQueryResults from "../pages/SearchQueryResults";
 import Pagination from "../pages/Pagination";
+import Form from "../pages/SearchInput";
 import api from "../../api";
 
 export default class SearchQuery extends Component {
   constructor(props) {
     super(props);
-    this._toggleClass = this._toggleClass.bind(this);
     this.state = {
       active: false,
       searchInput: "",
-      searchFilter: "default",
+      searchFilter: "Default",
       err: "",
       loading: false,
       results: null,
@@ -28,92 +28,13 @@ export default class SearchQuery extends Component {
 
     return (
       <div className="search-wrapper">
-        <form
-          onSubmit={this._onSubmit}
-          style={{
-            display: !active && "flex",
-            justifyContent: !active && "center"
-          }}
-        >
-          <i
-            className={
-              active
-                ? "fa fa-search search-icon-opened"
-                : "fa fa-search"
-            }
-            onClick={this._toggleClass}
-          />
-          <input
-            type="text"
-            className={active ? "input-opened" : ""}
-            style={{ width: active ? "250px" : "0px" }}
-            name="searchInput"
-            value={searchInput}
-            placeholder="Enter a garment..."
-            onChange={this._onChange}
-          />
-          {active && (
-            <div className="radio-wrapper">
-              <label className="radio-btn" htmlFor="">
-                <input
-                  type="radio"
-                  value="default"
-                  name="searchFilter"
-                  checked={searchFilter === "default"}
-                  onChange={this._onChange}
-                />
-                <i
-                  className="fa fa-circle-o"
-                  aria-hidden="true"
-                  //since the onChange events on the radio input buttons wouldn't fire, it had to be hard coded like this
-                  onClick={() => this.setState({ searchFilter: "default" })}
-                />
-                <span>Default</span>
-              </label>
-              <label className="radio-btn" htmlFor="">
-                <input
-                  type="radio"
-                  value="ascendingPrice"
-                  name="searchFilter"
-                  checked={searchFilter === "ascendingPrice"}
-                  onChange={this._onChange}
-                />
-                <i
-                  className="fa fa-circle-o"
-                  aria-hidden="true"
-                  onClick={() =>
-                    this.setState({ searchFilter: "ascendingPrice" })
-                  }
-                />
-                <span>Price: Low to High</span>
-              </label>
-              <label className="radio-btn" htmlFor="">
-                <input
-                  type="radio"
-                  value="descendingPrice"
-                  name="searchFilter"
-                  checked={searchFilter === "descendingPrice"}
-                  onChange={this._onChange}
-                />
-                <i
-                  className="fa fa-circle-o"
-                  aria-hidden="true"
-                  onClick={() =>
-                    this.setState({ searchFilter: "descendingPrice" })
-                  }
-                />
-                <span>Price: High to Low</span>
-              </label>
-            </div>
-          )}
-          <input
-            type="submit"
-            className={active ? "submit submit-active" : "submit"}
-            value="Search"
-            disabled={!searchInput}
-            style={{ display: active && "inline-block" }}
-          />
-        </form>
+        <Form
+          searchInput={searchInput}
+          active={active}
+          _onChange={this._onChange}
+          _toggleClass={this._toggleClass}
+          searchFilter={searchFilter}
+          _onSubmit={this._onSubmit} />
         {results && !loading && (
           <Pagination
             offset={offset}
@@ -129,7 +50,6 @@ export default class SearchQuery extends Component {
         )}
       </div>
     );
-
   }
 
   _toggleClass = () => {
@@ -159,11 +79,11 @@ export default class SearchQuery extends Component {
           // remove last element of result array, which contains the total number of search results info
           results: results.slice(0, results.length - 1),
           resultsTotal: results.pop().resultsTotal,
-          loading: false
+          loading: false,
+          err: ""
         });
       })
       .catch(err => {
-        console.log("error has occurrred!", err.description)
         this.setState({
           err: err,
           results: null,
@@ -174,7 +94,6 @@ export default class SearchQuery extends Component {
 
   _onSubmit = e => {
     e.preventDefault();
-
     if (!this.state.searchInput) {
       this.setState({ results: null, loading: false });
       return;
@@ -184,7 +103,11 @@ export default class SearchQuery extends Component {
   };
 
   _onChange = e => {
-    e.preventDefault();
-    this.setState({ [e.target.name]: e.currentTarget.value });
+    if (typeof e === "object") {
+      e.preventDefault();
+      this.setState({ [e.target.name]: e.currentTarget.value });
+    } else {
+      this.setState({ searchFilter: e })
+    }
   };
 }
