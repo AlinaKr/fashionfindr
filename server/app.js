@@ -1,17 +1,12 @@
 const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const express = require("express");
-const mongoose = require("mongoose");
 const logger = require("morgan");
 const nocache = require("nocache");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-
-require("./configs/database");
+const connectDB = require('./config/database')
 
 const app_name = require("./package.json").name;
 const debug = require("debug")(
@@ -19,6 +14,9 @@ const debug = require("debug")(
 );
 
 const app = express();
+
+//Connect and fill database
+connectDB();
 
 app.use(nocache());
 
@@ -41,16 +39,7 @@ app.use(cookieParser());
 // Example: http://localhost:5000/favicon.ico => Display "~/client/build/favicon.ico"
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-// Enable authentication using session + passport
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "irongenerator",
-    resave: true,
-    saveUninitialized: true,
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
-  })
-);
-
+// Define routes
 app.use("/api", require("./routes/items"));
 
 // For any routes that starts with "/api", catch 404 and forward to error handler
