@@ -11,7 +11,7 @@ export default class App extends Component {
         <SearchFormState>
           <div className="App">
             <div className="container">
-              <h1>Full Stack Challenge</h1>
+              <h1>FahionFindr</h1>
               <SearchQuery />
             </div>
           </div>

@@ -60,13 +60,13 @@ const Form = () => {
           disabled={!searchInput}
           style={{ display: active && "inline-block" }}
         />
-        <input
+        {/* <input
           type="submit"
           className={active ? "submit submit-active" : "submit"}
           value="Reset"
           disabled={!searchInput}
           style={{ display: active && "inline-block" }}
-        />
+        /> */}
       </div>
 
     </form>
