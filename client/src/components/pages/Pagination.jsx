@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect } from "react";
-
+import React, { Fragment, useContext } from "react";
+import SearchPageContext from "../context/searchPageContext"
 import "../../style/Pagination.scss"
 
 const LEFT_PAGE = "LEFT";
@@ -19,11 +19,11 @@ const range = (from, to, step = 1) => {
   return range;
 };
 
-function Pagination(props) {
-  const [currentPage, setCurrentPage] = useState(1)
+const Pagination = (props) => {
+  const searchPageContext = useContext(SearchPageContext);
+  const { limit = 30, resultsTotal, currentPage, _updatePage } = searchPageContext;
 
-  const { limit = 30, resultsTotal } = props;
-  const pageLimit = typeof props.limit === "number" ? limit : 30;
+  const pageLimit = typeof limit === "number" ? limit : 30;
   const totalRecords = typeof resultsTotal === "number" ? resultsTotal : 0;
 
   // pageNeighbours can be: 0, 1 or 2
@@ -34,14 +34,9 @@ function Pagination(props) {
 
   const totalPages = Math.ceil(totalRecords / pageLimit);
 
-  useEffect(() => {
-    console.log("use effect was called")
-    setCurrentPage(props.currentPage)
-  }, [])
-
   const gotoPage = page => {
     const currentPage = Math.max(0, Math.min(page, totalPages));
-    props._updatePage(currentPage);
+    _updatePage(currentPage);
   };
 
   const handleClick = page => evt => {
@@ -65,7 +60,7 @@ function Pagination(props) {
   // (1) < {4 5} [6] {7 8} > (10)
 
   const fetchPageNumbers = () => {
-    console.log("fetch page numbers was called")
+
     /**
      * totalNumbers: the total page numbers to show on the control
      * totalBlocks: totalNumbers + 2 to cover for the left(<) and right(>) controls
