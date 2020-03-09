@@ -44,7 +44,6 @@ $ cd client
 $ npm install --save axios
 ```
 
-```
 
 2. Open two terminal windows to get the application up and running on server and client side
 
