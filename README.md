@@ -49,7 +49,7 @@ $ npm install --save axios
 
 **Terminal 1**
 ```
-$npm run dev:server // -> # Server running on http://localhost:4000/
+$npm run dev:server // -> # Server running on http://localhost:5000/
 ```
 **Terminal 2**
 ```
